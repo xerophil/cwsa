@@ -95,6 +95,7 @@
     </properties>
     <modules>
 	<module>cwsa-commons</module>
-    </modules>
+    <module>cwsa-server-endpoint</module>
+  </modules>
     <name>CWCLAN Server Administration</name>
 </project>
