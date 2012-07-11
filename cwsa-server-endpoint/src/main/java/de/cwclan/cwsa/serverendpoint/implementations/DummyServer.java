@@ -13,40 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cwclan.cwsa.commons.domain;
+package de.cwclan.cwsa.serverendpoint.implementations;
+
+import de.cwclan.cwsa.commons.domain.ServerCommand;
+import de.cwclan.cwsa.commons.domain.ServerStatus;
+import de.cwclan.cwsa.serverendpoint.abstraction.AbstractServerEndpoint;
 
 /**
  *
  * @author Simon Beckstein <simon.beckstein@gmail.com>
  */
-public class ServerStatus implements Cloneable {
+public class DummyServer extends AbstractServerEndpoint {
 
-    private final boolean running;
-    private final String message;
+    private boolean running = false;
 
-    public ServerStatus() {
-	this(false, null);
-    }
-
-    public ServerStatus(ServerStatus status) {
-	this(status.isRunning(), status.getMessage());
-    }
-
-    public ServerStatus(boolean running, String message) {
-	this.running = running;
-	this.message = message;
-    }
-
-    public String getMessage() {
-	return message;
-    }
-
-    public boolean isRunning() {
-	return running;
+    public DummyServer(ServerCommand shellScript) {
+	super(shellScript);
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-	return new ServerStatus(running, message);
+    public ServerStatus parseOutput(String output) {
+	throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    
+    
+
 }
