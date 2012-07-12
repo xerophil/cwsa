@@ -11,23 +11,23 @@
 	<url>http://www.cwclan.de</url>
     </organization>
     <developers>
-        <developer>
-            <id>beckstes</id>
-            <name>Simon Beckstein</name>
-            <email>simon.beckstein@gmail.com</email>
-            <organization>CWCLAN</organization>
-            <roles>
-                <role>developer</role>
-            </roles>
-        </developer>
+	<developer>
+	    <id>beckstes</id>
+	    <name>Simon Beckstein</name>
+	    <email>simon.beckstein@gmail.com</email>
+	    <organization>CWCLAN</organization>
+	    <roles>
+		<role>developer</role>
+	    </roles>
+	</developer>
     </developers>
     <licenses>
-        <license>
-            <name>Apache 2</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-            <comments>A business-friendly OSS license</comments>
-        </license>
+	<license>
+	    <name>Apache 2</name>
+	    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	    <distribution>repo</distribution>
+	    <comments>A business-friendly OSS license</comments>
+	</license>
     </licenses>
     <build>
 	<plugins>
@@ -47,6 +47,21 @@
 		<version>2.4.3</version>
 		<configuration>
 		    <encoding>${project.build.sourceEncoding}</encoding>
+		</configuration>
+	    </plugin>
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-shade-plugin</artifactId>
+		<executions>
+		    <execution>
+			<phase>package</phase>
+			<goals>
+			    <goal>shade</goal>
+			</goals>
+		    </execution>
+		</executions>
+		<configuration>
+		    <finalName>dep-${artifactId}-${version}</finalName>
 		</configuration>
 	    </plugin>
 	    <plugin>
@@ -95,7 +110,7 @@
     </properties>
     <modules>
 	<module>cwsa-commons</module>
-    <module>cwsa-server-endpoint</module>
-  </modules>
+	<module>cwsa-server-endpoint</module>
+    </modules>
     <name>CWCLAN Server Administration</name>
 </project>
