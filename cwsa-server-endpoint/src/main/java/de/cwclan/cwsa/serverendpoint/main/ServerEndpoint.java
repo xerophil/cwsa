@@ -18,7 +18,6 @@ package de.cwclan.cwsa.serverendpoint.main;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Properties;
-import java.util.logging.Level;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
