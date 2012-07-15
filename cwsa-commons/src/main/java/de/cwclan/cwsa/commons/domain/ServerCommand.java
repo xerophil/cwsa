@@ -15,7 +15,9 @@
  */
 package de.cwclan.cwsa.commons.domain;
 
+import de.cwclan.cwsa.commons.exceptions.ServerException;
 import java.io.File;
+import java.util.Properties;
 
 /**
  *
@@ -27,31 +29,72 @@ public class ServerCommand {
     private String startCmd;
     private String stopCmd;
     private String statusCmd;
+    public static final String DEFAULT_START_CMD = "start";
+    public static final String DEFAULT_STOP_CMD = "stop";
+    public static final String DEFAULT_STATUS_CMD = "status";
 
-    public ServerCommand(String shellScriptPath) {
-        this(shellScriptPath, "start", "stop", "status");
+    public ServerCommand(String shellScriptPath) throws ServerException {
+	this(shellScriptPath, DEFAULT_START_CMD, DEFAULT_STOP_CMD, DEFAULT_STATUS_CMD);
     }
 
-    public ServerCommand(String shellScriptPath, String startCmd, String stopCmd, String statusCmd) {
-        this.shellScriptPath = new File(shellScriptPath);
-        this.startCmd = startCmd;
-        this.stopCmd = stopCmd;
-        this.statusCmd = statusCmd;
+    public ServerCommand(String shellScriptPath, String startCmd, String stopCmd, String statusCmd) throws ServerException {
+	setShellScriptPath(new File(shellScriptPath));
+	setStartCmd(startCmd);
+	setStopCmd(stopCmd);
+	setStatusCmd(statusCmd);
+    }
+
+    public ServerCommand(Properties serviceSettings) throws ServerException {
+	this(serviceSettings.getProperty("service.scriptPath"),
+		serviceSettings.getProperty("service.startCmd", DEFAULT_START_CMD),
+		serviceSettings.getProperty("service.stopCmd", DEFAULT_STOP_CMD),
+		serviceSettings.getProperty("service.statusCmd", DEFAULT_STATUS_CMD));
+    }
+
+    private void setShellScriptPath(File shellScriptPath) throws ServerException {
+	if (shellScriptPath == null) {
+	    throw new ServerException("path to service script not set");
+	}
+	if (!(shellScriptPath.isFile() && shellScriptPath.canExecute())) {
+	    throw new ServerException("service script cannot be executed or is not a file");
+	}
+	this.shellScriptPath = shellScriptPath;
+    }
+
+    private void setStartCmd(String startCmd) {
+	if (startCmd == null || startCmd.isEmpty()) {
+	    stopCmd = DEFAULT_STATUS_CMD;
+	}
+	this.startCmd = startCmd;
+    }
+
+    private void setStatusCmd(String statusCmd) {
+	if (statusCmd == null || statusCmd.isEmpty()) {
+	    stopCmd = DEFAULT_STATUS_CMD;
+	}
+	this.statusCmd = statusCmd;
+    }
+
+    private void setStopCmd(String stopCmd) {
+	if (stopCmd == null || stopCmd.isEmpty()) {
+	    stopCmd = DEFAULT_STOP_CMD;
+	}
+	this.stopCmd = stopCmd;
     }
 
     public File getShellScriptPath() {
-        return shellScriptPath;
+	return shellScriptPath;
     }
 
     public String getStartCmd() {
-        return startCmd;
+	return startCmd;
     }
 
     public String getStatusCmd() {
-        return statusCmd;
+	return statusCmd;
     }
 
     public String getStopCmd() {
-        return stopCmd;
+	return stopCmd;
     }
 }

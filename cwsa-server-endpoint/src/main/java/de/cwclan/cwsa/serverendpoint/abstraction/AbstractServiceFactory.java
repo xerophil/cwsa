@@ -13,30 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cwclan.cwsa.serverendpoint.implementations;
+package de.cwclan.cwsa.serverendpoint.abstraction;
 
 import de.cwclan.cwsa.commons.domain.ServerCommand;
-import de.cwclan.cwsa.commons.domain.ServerStatus;
-import de.cwclan.cwsa.serverendpoint.abstraction.AbstractServerEndpoint;
+import de.cwclan.cwsa.commons.exceptions.ServerException;
 
 /**
  *
  * @author Simon Beckstein <simon.beckstein@gmail.com>
  */
-public class DummyServer extends AbstractServerEndpoint {
-
-    private boolean running = false;
-
-    public DummyServer(ServerCommand shellScript) {
-	super(shellScript);
-    }
-
-    @Override
-    public ServerStatus parseOutput(String output) {
-	throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+public class AbstractServiceFactory {
     
+    public static AbstractService createService(String implementation, ServerCommand command) throws ServerException {
+	AbstractService service = null;
+	
+	
+	return service;
+    }
     
-
 }

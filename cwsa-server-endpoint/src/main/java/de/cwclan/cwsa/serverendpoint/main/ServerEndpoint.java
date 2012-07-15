@@ -15,9 +15,15 @@
  */
 package de.cwclan.cwsa.serverendpoint.main;
 
+import de.cwclan.cwsa.commons.domain.ServerCommand;
+import de.cwclan.cwsa.commons.exceptions.ServerException;
+import de.cwclan.cwsa.serverendpoint.abstraction.AbstractServerEndpoint;
+import de.cwclan.cwsa.serverendpoint.abstraction.AbstractService;
+import de.cwclan.cwsa.serverendpoint.abstraction.AbstractServiceFactory;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Properties;
+import javax.xml.ws.Endpoint;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,13 +36,28 @@ public class ServerEndpoint {
 
     private static final Logger log = LoggerFactory.getLogger(ServerEndpoint.class);
     private Properties properties;
+    private AbstractServerEndpoint endpointImpl;
+    private AbstractService service;
+    private Endpoint endpoint;
 
     public ServerEndpoint(Properties properties) {
-	this.properties = properties;
+	try {
+	    this.properties = properties;
+	    service = AbstractServiceFactory.createService(properties.getProperty("endpoint.implementation"), new ServerCommand(properties));
+	    endpoint = Endpoint.create(endpointImpl);
+	} catch (ServerException ex) {
+	    log.error("Failed to start Endpoint", ex);
+	}
+
     }
 
-    public void run() {
-	
+    public void start() {
+	endpoint.publish("http://" + properties.getProperty("endpoint.host", "localhost")
+		+ ":" + properties.getProperty("endpoint.port", "8183") + "/ws");
+    }
+
+    public void stop() {
+	endpoint.stop();
     }
 
     private Thread getShutdownHook() {
@@ -45,6 +66,7 @@ public class ServerEndpoint {
 	    @Override
 	    public void run() {
 		log.info("CTRL-C detected. Shutting down gracefully.");
+		ServerEndpoint.this.stop();
 	    }
 	};
     }
@@ -96,7 +118,7 @@ public class ServerEndpoint {
 	    log.info("Config read successfull. Values are: {}", properties);
 	    ServerEndpoint endpoint = new ServerEndpoint(properties);
 	    Runtime.getRuntime().addShutdownHook(endpoint.getShutdownHook());
-	    endpoint.run();
+	    endpoint.start();
 	} catch (IOException ex) {
 	    log.error("Error while reading config.", ex);
 	} catch (ParseException ex) {
@@ -109,6 +131,9 @@ public class ServerEndpoint {
     public static void printHelp(Options options) {
 	HelpFormatter formatter = new HelpFormatter();
 	String fileName = "<jar-file>";
+	/*
+	 * get the name of the jar file, but dont care if fails
+	 */
 	try {
 	    File jarFile = new File(ServerEndpoint.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 	    fileName = jarFile.getName();
