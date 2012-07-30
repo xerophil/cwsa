@@ -26,10 +26,12 @@ public abstract class AbstractService {
 
     private Integer pid;
     private Integer port;
+    private Boolean portRunning;
+    private Boolean processRunning;
+    private Boolean statusOk;
     private ServerCommand shellScript;
-    
+
     public AbstractService() {
-	
     }
 
     ServerCommand getShellScript() {
@@ -51,8 +53,4 @@ public abstract class AbstractService {
     ServerStatus parseCustomCommand(String operationName, String output) {
 	throw new UnsupportedOperationException("Not yet implemented");
     }
-    
-    
-    
-    
 }

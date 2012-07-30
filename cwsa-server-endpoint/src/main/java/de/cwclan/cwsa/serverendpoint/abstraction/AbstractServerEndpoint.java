@@ -60,7 +60,7 @@ public abstract class AbstractServerEndpoint implements ServerInterface {
 
     @Override
     public ServerStatus restartServer() throws ServerException {
-	ServerStatus stop = service.parseStopCommand(executeOperation(shellScript.getStopCmd()));
+	ServerStatus stop = stopServer();
 	if (!stop.isRunning()) {
 	    return startServer();
 	} else {
@@ -74,11 +74,11 @@ public abstract class AbstractServerEndpoint implements ServerInterface {
 	return service.parseCustomCommand(operationName, output);
     }
 
-    public String executeOperation(String operationName) throws ServerException {
+    private String executeOperation(String operationName) throws ServerException {
 	StringBuilder output = new StringBuilder();
 	try {
 
-	    Process process = Runtime.getRuntime().exec(shellScript.getShellScriptPath().getAbsolutePath());
+	    Process process = Runtime.getRuntime().exec(new String[]{shellScript.getShellScriptPath().getAbsolutePath(), operationName});
 	    InputStream in = process.getInputStream();
 
 	    int c;
@@ -94,7 +94,9 @@ public abstract class AbstractServerEndpoint implements ServerInterface {
 
 
 	} catch (InterruptedException ex) {
+	    
 	} catch (IOException ex) {
+	    ex.printStackTrace();
 	}
 	return output.toString();
     }
