@@ -19,18 +19,64 @@ import de.cwclan.cwsa.commons.domain.ServerStatus;
 import de.cwclan.cwsa.commons.exceptions.ServerException;
 
 /**
+ * Defines basic operations which every server should support. The
+ * implementation depends on how the specific script starts or stops the service
+ * and how the outupt is parsed. The {@code customOperation}-Method is used to
+ * support custom, server specific, operations like refresh for example.
  *
  * @author Simon Beckstein <simon.beckstein@gmail.com>
  */
 public interface ServerInterface {
 
+    /**
+     * Calls the status-Parameter of the Service to determine if its running or
+     * not.
+     *
+     * @return A {@link ServerStatus}-Object with the current state of the
+     * service
+     * @throws ServerException if the call fails or the output of status is
+     * unexpected
+     */
     public ServerStatus getStatus() throws ServerException;
 
+    /**
+     * Calls the start-Command of the service to start it.
+     *
+     * @return A {@link ServerStatus}-Object with the current state of the
+     * service
+     * @throws ServerException if the call fails or the output of status is
+     * unexpected
+     */
     public ServerStatus startServer() throws ServerException;
 
+    /**
+     * Calls the stop-Command of the service to stop it.
+     *
+     * @return A {@link ServerStatus}-Object with the current state of the
+     * service
+     * @throws ServerException if the call fails or the output of status is
+     * unexpected
+     */
     public ServerStatus stopServer() throws ServerException;
 
+    /**
+     * Calls the restart-Command to restart the service.
+     *
+     * @return A {@link ServerStatus}-Object with the current state of the
+     * service
+     * @throws ServerException if the call fails or the output of status is
+     * unexpected
+     */
     public ServerStatus restartServer() throws ServerException;
 
+    /**
+     * Used to call custom commands of the service.
+     *
+     * @param operationName the parameter of the shell script
+     * @return A {@link ServerStatus}-Object with the current state of the
+     * service
+     * @throws ServerException if the call fails or the output of status is
+     * unexpected
+     */
     public ServerStatus customOperation(String operationName) throws ServerException;
 }

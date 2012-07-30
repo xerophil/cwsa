@@ -20,7 +20,7 @@ import java.io.File;
 import java.util.Properties;
 
 /**
- *
+ * 
  * @author Simon Beckstein <simon.beckstein@gmail.com>
  */
 public class ServerCommand {
@@ -63,7 +63,7 @@ public class ServerCommand {
 
     private void setStartCmd(String startCmd) {
 	if (startCmd == null || startCmd.isEmpty()) {
-	    stopCmd = DEFAULT_STATUS_CMD;
+	    stopCmd = DEFAULT_START_CMD;
 	}
 	this.startCmd = startCmd;
     }
