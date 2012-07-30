@@ -45,6 +45,7 @@ public class ServerEndpoint {
 	    this.properties = properties;
 	    service = AbstractServiceFactory.createService(properties.getProperty("endpoint.implementation"), new ServerCommand(properties));
 	    endpoint = Endpoint.create(endpointImpl);
+
 	} catch (ServerException ex) {
 	    log.error("Failed to start Endpoint", ex);
 	}
@@ -62,7 +63,6 @@ public class ServerEndpoint {
 
     private Thread getShutdownHook() {
 	return new Thread() {
-
 	    @Override
 	    public void run() {
 		log.info("CTRL-C detected. Shutting down gracefully.");
@@ -86,11 +86,13 @@ public class ServerEndpoint {
 	     */
 	    CommandLine cmd = parser.parse(options, args);
 
+	    /*
+	     * load default configuration
+	     */
 	    InputStream in = ServerEndpoint.class.getResourceAsStream("/endpoint.properties");
 	    if (in == null) {
 		throw new IOException("Unable to load default config from JAR. This should not happen.");
 	    }
-
 	    properties.load(in);
 	    in.close();
 	    log.debug("Loaded default config base: {}", properties.toString());
@@ -98,10 +100,11 @@ public class ServerEndpoint {
 		printHelp(options);
 		System.exit(0);
 	    }
+
+	    /*
+	     * parse cutom config if exists, otherwise create default cfg
+	     */
 	    if (cmd.hasOption("config")) {
-		/*
-		 * parse cutom config if exists, otherwise create default cfg
-		 */
 		File file = new File(cmd.getOptionValue("config", "endpoint.properties"));
 		if (file.exists() && file.canRead() && file.isFile()) {
 		    in = new FileInputStream(file);
@@ -112,9 +115,11 @@ public class ServerEndpoint {
 		}
 		FileWriter out = new FileWriter(file);
 		properties.store(out, "Warning, this file is recreated on every startup to merge missing parameters.");
-
 	    }
 
+	    /*
+	     * create and start endpoint
+	     */
 	    log.info("Config read successfull. Values are: {}", properties);
 	    ServerEndpoint endpoint = new ServerEndpoint(properties);
 	    Runtime.getRuntime().addShutdownHook(endpoint.getShutdownHook());
